@@ -1,0 +1,25 @@
+{
+  "name": "baitap10ngay",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000W\u0000E\u0000B\u0000_\u0000Q\u0000L\u0000C\u0000T\u0000\r\u0000 \u0000#\u0000 \u0000W\u0000E\u0000B\u0000_\u0000Q\u0000L\u0000C\u0000T\u0000\r\u0000 \u0000",
+  "homepage": "https://github.com/HHoaiAnh21062001/WEB_QLCT#readme",
+  "bugs": {
+    "url": "https://github.com/HHoaiAnh21062001/WEB_QLCT/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HHoaiAnh21062001/WEB_QLCT.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "client": "cd client && npm run serve",
+    "server": "cd server && npm run dev",
+    "start": "concurrently \"npm run client\" \"npm run server\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
