@@ -53,6 +53,12 @@
     column-gap: 0px;
     background-color: rgb(105, 110, 255);
 }
+.describe2 {
+    display: grid;
+    grid-template-columns: 16.8% 20.9% 16.8% 16.8% 16.8% 11.8%;
+    column-gap: 0px;
+    border: 1px solid black;
+}
 
 .describe-item {
     display: grid;
@@ -64,7 +70,7 @@
 }
 
 .describe-item2 {
-    background-color: rgb(192, 192, 192) ;
+    
     display: grid;
     text-align: center;
     border: 1px solid black;
@@ -177,8 +183,8 @@ label{
             <div class="describe-item">chỉnh sửa</div>
             <div class="describe-item">Xóa</div>
         </div>
-        <div class="item" v-for="item in dsChiTieu">
-            <div class="describe">
+        <div class="item" v-for="(item, index) in dsChiTieu" :key="index" :style="{ backgroundColor: index % 2 === 0 ? 'rgb(192, 192, 192)' : '#edcfcf' }">
+            <div class="describe2" >
                 <div class="describe-item2">{{ item.ngaychitien }}</div>
                 <div class="describe-item2">{{ item.sotienchira }}</div>
                 <div class="describe-item2">{{ item.danhmuc }}</div>
@@ -221,9 +227,9 @@ label{
          </div>
         <!-- them -->
          <div>
-            <div v-show="showThemGiaoDich" class="modal">
+            <div v-show="showThemGiaoDich" class="modal" >
                 <h2>Thêm giao dịch</h2>
-                <form @submit.prevent="themGiaoDich" class="item2">
+                <form @submit.prevent="themGiaoDich()" class="item2">
                     <label for="ngay">Ngày:</label>
                     <input type="date" v-model="formChiTieu.ngay" required>
                     <label for="tien">Số tiền:</label>
@@ -268,6 +274,8 @@ export default {
       idToDelete: null,
       dsChiTieu: [],
       pollingInterval: null,
+      color1: 'rgb(192, 192, 192)',
+      color2: 'rgb(255, 255, 255)',
       date: '',
       date2: '',
       formChiTieu: {
@@ -281,32 +289,44 @@ export default {
         danhmucsua: '',
         tiensua: 0,
         ghichusua: '',
-      }
+      },
+      
 
     }
     },
     created() { 
-     
-        this.loadChiTieu();
+      
+      console.log(localStorage.getItem('userId'))
+      this.userId = localStorage.getItem('userId')
+      this.loadChiTieu();
+        if (this.userId == 'null') {
+        this.$router.push('/login')
+        alert('bạn chưa đăng nhập')
       }
+    }
 ,
 
     methods: {
     async loadChiTieu() {
-      try {
-        const userId = this.$route.params.id;
-        const response = await fetch(`http://localhost:2161/api/chitien/${userId}`);
-        if (response.ok) {
-          const data = await response.json();
-          this.dsChiTieu = data;
+      console.log(this.userId)
+        if (this.userId != 'null') {
+          try {
+          const response = await fetch(`http://localhost:2161/api/chitien/${this.userId}`);
+          console.log(response)
+          if (response.ok) {
+            const data = await response.json();
+            this.dsChiTieu = data;
+          }
+          } catch (error) {
+            console.error('Lỗi khi tải dữ liệu:', error);
+          }
         }
-      } catch (error) {
-        console.error('Lỗi khi tải dữ liệu:', error);
+      else {
+        this.$router.push('/login')
       }
     },
     async themGiaoDich() {
-      const userId = this.$route.params.id;
-      const response = await fetch(`http://localhost:2161/api/chitien/${userId}`, {
+      const response = await fetch(`http://localhost:2161/api/chitien/${this.userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -316,7 +336,7 @@ export default {
           sotienchira: this.formChiTieu.tien,
           danhmuc: this.formChiTieu.danhmuc,
           mota: this.formChiTieu.ghichu,
-          mataikhoan: userId
+          mataikhoan: this.userId
         })
       });
       if (response.ok) {
@@ -331,8 +351,8 @@ export default {
       }
       },
       async suaGiaoDich() {
-      const userId = this.$route.params.id;
-      const response = await fetch(`http://localhost:2161/api/chitien/${userId}`, {
+      
+      const response = await fetch(`http://localhost:2161/api/chitien/${this.userId}`, {
         method: 'put',
         headers: {
           'Content-Type': 'application/json'
@@ -369,16 +389,16 @@ export default {
       hienthem() {
         this.showThemGiaoDich = true;
       },
-      xacNhanXoa() {
-        const userId = this.$route.params.id;
-        fetch(`http://localhost:2161/api/chitien/${userId}`, {
+      async xacNhanXoa() {
+        
+        const response = await fetch(`http://localhost:2161/api/chitien/${this.userId}`, {
           method: 'DELETE',
           headers: {
           'Content-Type': 'application/json'
         },
           body: JSON.stringify({
             machitien: this.idToDelete,
-            mataikhoan: userId
+            mataikhoan: this.userId
 
         })
         })

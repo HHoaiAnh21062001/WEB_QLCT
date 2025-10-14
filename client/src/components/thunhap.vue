@@ -51,6 +51,12 @@
     column-gap: 0px;
     background-color: rgb(105, 110, 255);
 }
+.describe2 {
+    display: grid;
+    grid-template-columns: 16.8% 20.9% 16.8% 16.8% 16.8% 11.8%;
+    column-gap: 0px;
+    border: 1px solid black;
+}
 
 .describe-item {
     display: grid;
@@ -63,7 +69,7 @@
 }
 
 .describe-item2 {
-    background-color: rgb(192, 192, 192) ;
+    
     display: grid;
     text-align: center;
     border: 1px solid black;
@@ -173,8 +179,8 @@ label{
             <div class="describe-item">chỉnh sửa</div>
             <div class="describe-item">Xóa</div>
         </div>
-        <div class="item" v-for="item in dsThuNhap">
-            <div class="describe">
+        <div class="item" v-for="(item, index) in dsThuNhap" :key="index" :style="{ backgroundColor: index % 2 === 0 ? 'rgb(192, 192, 192)' : '#edcfcf' }">
+            <div class="describe2">
                 <div class="describe-item2">{{ item.ngay }}</div>
                 <div class="describe-item2">{{ item.sotien }}</div>
                 <div class="describe-item2">{{ item.danhmuc }}</div>
@@ -277,13 +283,21 @@ export default {
     }
   },
   created() { 
+    console.log(localStorage.getItem('userId'))
+    this.userId = localStorage.getItem('userId')
     this.loadThuNhap();
+    if (this.userId == 'null') {
+      this.$router.push('/login')
+      alert('bạn chưa đăng nhập')
+    }
   },
   methods: {
     async loadThuNhap() {
-      try {
-        const userId = this.$route.params.id;
-        const response = await fetch(`http://localhost:2161/api/thunhap/${userId}`);
+      console.log(this.userId)
+      if (this.userId != 'null') {
+        try {
+        
+        const response = await fetch(`http://localhost:2161/api/thunhap/${this.userId}`);
         if (response.ok) {
           const data = await response.json();
           this.dsThuNhap = data;
@@ -291,10 +305,11 @@ export default {
       } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error);
       }
+      }
     },
     async themGiaoDich() {
-      const userId = this.$route.params.id;
-      const response = await fetch(`http://localhost:2161/api/thunhap/${userId}`, {
+      
+      const response = await fetch(`http://localhost:2161/api/thunhap/${this.userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -304,7 +319,7 @@ export default {
           sotien: this.formThuNhap.tien,
           danhmuc: this.formThuNhap.danhmuc,
           mota: this.formThuNhap.ghichu,
-          mataikhoan: userId
+          mataikhoan: this.userId
         })
       });
       if (response.ok) {
@@ -319,8 +334,8 @@ export default {
       }
     },
     async suaGiaoDich() {
-      const userId = this.$route.params.id;
-      const response = await fetch(`http://localhost:2161/api/thunhap/${userId}`, {
+      
+      const response = await fetch(`http://localhost:2161/api/thunhap/${this.userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -358,15 +373,15 @@ export default {
       this.showThemGiaoDich = true;
     },
     xacNhanXoa() {
-      const userId = this.$route.params.id;
-      fetch(`http://localhost:2161/api/thunhap/${userId}`, {
+      
+      fetch(`http://localhost:2161/api/thunhap/${this.userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           mathunhap: this.idToDelete,
-          mataikhoan: userId
+          mataikhoan: this.userId
         })
       })
       .then(response => {

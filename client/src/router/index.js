@@ -5,6 +5,7 @@ import chitieu from '../components/chitieu.vue'
 import home from '../components/home.vue'
 import thunhap from '../components/thunhap.vue'
 import login from '../components/login.vue'
+import signIn from '../components/sign-in.vue'
 
 
 const routes = [
@@ -31,8 +32,16 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: login
+  },
+
+  {
+    path: '/sign-in',
+    name: 'sign-in',
+    component: signIn
   }
 ]
+
+
 
 const router = createRouter({
   history: createWebHistory(),

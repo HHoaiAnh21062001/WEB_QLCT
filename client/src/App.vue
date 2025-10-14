@@ -46,7 +46,7 @@ body{
 }
 
 .active {
-    background-color: rgb(136, 136, 253);
+    background-color: rgb(57, 57, 173);
 }
 #app {
     width: 100%;
@@ -65,7 +65,7 @@ body{
             <router-link :to="`/home/${userId}`"  class="item-menu" exact-active-class="active">home</router-link >
             <router-link :to="`/chitieu/${userId}`"  class="item-menu" active-class="active">Chi Tiêu</router-link >
             <router-link :to="`/thunhap/${userId}`"  class="item-menu" active-class="active">thu nhập</router-link >
-            <a  v-on:click="reset" class="item-menu">đăng xuất</a>
+            <router-link :to="`/login`"  class="item-menu" v-on:click="" >đăng xuất</router-link>
         </div>
     </div>
     <router-view></router-view>
@@ -74,18 +74,22 @@ body{
 </template>
 
 <script>
-import Home from './components/home.vue';
+import login from './components/login.vue';
 
 
 export default {
   name: 'App',
   components: {
-    Home
+    login
     },
     
+    
   created() {
-    // Lấy userId từ localStorage khi component được tạo
-    this.userId = localStorage.getItem('userId')
+      // Lấy userId từ localStorage khi component được tạo
+    
+      this.userId = localStorage.getItem('userId')
+      
+      
   },
     methods: {
         setUserId(id) {
@@ -94,15 +98,10 @@ export default {
         },
         logout() {
             this.userId = null
-            localStorage.removeItem('userId')
+            localStorage.setItem('userId', null)
             this.$router.push('/login')
         },
-        reset() {
-            localStorage.removeItem('userId')
-            this.$router.push('/login')
-        }
-
-    }
+    },
 }
 </script>
 

@@ -3,21 +3,31 @@
     <form @submit.prevent="handleLogin">
       <h2>Đăng nhập</h2>
       <div class="form-group">
-        <input type="text" v-model="tentaikhoan" placeholder="Tên tài khoản" >
+        <input type="text" v-model="tentaikhoan" placeholder="Tên tài khoản" required>
       </div>
       <div class="form-group">
-        <input type="password" v-model="matkhau" placeholder="Mật khẩu" >
+        <input type="gmail" v-model="gmail" placeholder="gmail" required>
       </div>
-      <button type="submit">Đăng nhập</button>
-      <span>bạn chưa có tài khoản ?</span> <router-link :to="`/sign-in`">đăng kí tài khoản</router-link>
+      <div class="form-group">
+        <input type="password" v-model="matkhau" placeholder="Mật khẩu" required>
+      </div>
+      <div>
+        <div class="form-group">
+            <input class="checkbox" type="checkbox">
+            <span>tôi đã đủ 18 tuổi và đã có thu nhập hằng tháng</span>
+        </div>
+      </div>
+      <div>
+        <button type="submit">Đăng nhập</button>
+        <span>bạn dã có tài khoản ?</span> <a href="http://localhost:8080/login">Đăng nhập thôi nào</a>
+      </div>
     </form>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'Login',
+  name: 'sign-in',
   data() {
     return {
       tentaikhoan: '',
@@ -25,13 +35,10 @@ export default {
     }
   },
   created() {
-    localStorage.setItem('hien', false)
-    localStorage.setItem('userId', null)
-    console.log(localStorage.getItem('userId'))
+    
   },
   methods: {
-    
-    
+
     async handleLogin() {
         
         const response = await fetch('http://localhost:2161/api/login', {
@@ -46,14 +53,10 @@ export default {
         });
         
         if (response.ok) {
-          const data = await response.json();
-          // Chuyển hướng đến trang chính với ID người dùng
-          localStorage.setItem('userId', data.mataikhoan);
-          console.log(localStorage.getItem('userId'))
-          this.$router.push(`/home/${data.mataikhoan}`);
-          localStorage.setItem('hien', true)
-          this.tentaikhoan = '';
-          this.matkhau = '';
+            const data = await response.json();
+            // Chuyển hướng đến trang chính với ID người dùng
+            localStorage.setItem('userId', data.mataikhoan);
+            this.$router.push(`/home/${data.mataikhoan}`);
       }
         else {
           this.$router.push('/login')
@@ -66,6 +69,14 @@ export default {
 </script>
 
 <style scoped>
+button{
+    margin-bottom: 5px;
+}
+.checkbox{
+    width: 20px;
+    
+    
+}
 .login-container {
   max-width: 400px;
   margin: 50px auto;
