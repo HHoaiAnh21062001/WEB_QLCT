@@ -1,3 +1,4 @@
+const dayjs = require('dayjs');
 const { chi_item_model,
     thu_item_model,
     acc_model
@@ -22,6 +23,25 @@ exports.chi_item_get_all = async (req, res) => {
     
     console.log(chitieuitem);
     return res.status(200).json(chitieuitem);
+}
+
+// lay item chi tieu in day
+exports.chi_item_get_in_day = async (req, res) => {
+    console.log(req.params.id);
+    const date = dayjs(req.body.ngaychitien).format('YYYY-MM-DD');
+    const chitieuindayitem = await chi_item_model.findAll(
+        {
+            where: {
+                mataikhoan: req.params.id,
+                ngaychitien: date
+            },
+            
+        }
+    );
+    
+    
+    console.log(chitieuindayitem);
+    return res.status(200).json(chitieuindayitem);
 }
 
 // lay toan bo item thu

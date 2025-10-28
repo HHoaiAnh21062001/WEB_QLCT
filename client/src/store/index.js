@@ -1,16 +1,42 @@
+import { createApp } from 'vue'
 import { createStore } from 'vuex'
 
-export default createStore({
-  state: {
-    // Define your initial state here
+const dsChiTieu1 = []
+
+createStore({
+  create() {
+    this.userId = localStorage.getItem('userId')
+      this.loadChiTieu();
+        if (this.userId == 'null') {
+        this.$router.push('/login')
+        alert('bạn chưa đăng nhập')
+      }
   },
-  mutations: {
-    // Define your mutations here
+  methods: {
+    async loadChiTieu() {
+      console.log(this.userId)
+        if (this.userId != 'null') {
+          try {
+          const response = await fetch(`http://localhost:2161/api/chitien/${this.userId}`);
+          console.log(response)
+          if (response.ok) {
+            const data = await response.json();
+            dsChiTieu = data;
+            for (let i = 0; i < this.dsChiTieu.length; i++) {
+              this.tong += parseInt(this.dsChiTieu[i].sotienchira);
+            }
+          }
+          } catch (error) {
+            console.error('Lỗi khi tải dữ liệu:', error);
+          }
+        }
+      else {
+        this.$router.push('/login')
+      }
+    },
   },
-  actions: {
-    // Define your actions here
-  },
-  modules: {
-    // Define your modules here if needed
-  }
+  
 })
+
+
+export default dsChiTieu1;

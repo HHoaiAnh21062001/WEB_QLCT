@@ -15,11 +15,20 @@
 .them {
     display: flex;
     justify-content: end;
+    background-color:  #2196f3;
+    margin-top: 10px;
 }
-
+.them:hover {
+    background-color:   #1976d2;
+}
 .btn_them {
     border: 1px solid black;
     border-radius: 5px;
+    height: 40px;
+    box-shadow: 0 0 10px black;
+}
+.btn_them:hover {
+    background-color:  #64b5f6;
 }
 
 .filter-item {
@@ -49,11 +58,13 @@
     display: grid;
     grid-template-columns: 16.8% 20.9% 16.8% 16.8% 16.8% 11.8%;
     column-gap: 0px;
-    background-color: rgb(105, 110, 255);
+    background-color:  #1976d2;
+    border: 1px solid black;
+    
 }
 .describe2 {
     display: grid;
-    grid-template-columns: 16.8% 20.9% 16.8% 16.8% 16.8% 11.8%;
+    grid-template-columns: 16.8% 20.9% 16.8% 16.8% 16.8% 11.9%;
     column-gap: 0px;
     border: 1px solid black;
 }
@@ -110,17 +121,19 @@
 }
 .thu-nhap{
     margin: 0px 10%;
+    
 }
 .modal{
   border-radius: 10px;
   position: absolute;
-  top: 40%;
+  top: 27%;
   left: 33.333%;
-  background-color: orange;
+  background-color:  #e3f2fd;
   padding: 40px;
   width: 30%;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 0 10px black;
 }
 .modal-buttons{
   display: flex;
@@ -150,11 +163,20 @@ label{
   text-align: left;
 }
 .them{
-  background-color: greenyellow;
+  
   justify-content: center !important;
 }
 .dong{
-  background-color: red;
+  background-color:  #ef5350;
+}
+.dong:hover{
+  background-color: #e53935;
+}
+.describe2more{
+    display: grid;
+    grid-template-columns: 16.8% 83.2%;
+    
+    border: 1px solid black;
 }
 </style>
 
@@ -164,11 +186,11 @@ label{
         <div class="them">
             <button class="btn_them" v-on:click="hienthem">Thêm thu nhập</button>
         </div>
-        <div class="filter">
+        <!-- <div class="filter">
             <input type="date" class="filterinput" id="date" v-model="date">
             <input type="date" class="filterinput" id="date2" v-model="date2">
             <button class="filter-item" v-on:click="locNgay">Lọc</button>
-        </div>
+        </div> -->
     </div>
     <div class="thu-nhap">
         <div class="describe">
@@ -179,10 +201,10 @@ label{
             <div class="describe-item">chỉnh sửa</div>
             <div class="describe-item">Xóa</div>
         </div>
-        <div class="item" v-for="(item, index) in dsThuNhap" :key="index" :style="{ backgroundColor: index % 2 === 0 ? 'rgb(192, 192, 192)' : '#edcfcf' }">
+        <div class="item" v-for="(item, index) in dsThuNhap" :key="index" :style="{ backgroundColor: index % 2 === 0 ? '#e3f2fd' : '#ffffff' }">
             <div class="describe2">
-                <div class="describe-item2">{{ item.ngay }}</div>
-                <div class="describe-item2">{{ item.sotien }}</div>
+                <div class="describe-item2">{{ formatVNDate(item.ngay) }}</div>
+                <div class="describe-item2">{{ formatVND(item.sotien) }}</div>
                 <div class="describe-item2">{{ item.danhmuc }}</div>
                 <div class="describe-item2">{{ item.mota }}</div>
                 <div class="describe-item2">
@@ -195,12 +217,17 @@ label{
                         <img src="../public/img/4177409791543238955-128.png" alt="" class="imgdelete">
                     </button>
                 </div>
-            </div>    
+            </div>
+            
+        </div>
+        <div class="describe2 describe2more" >
+              <div class="describe-item2" style="background-color: #bbdefb;">Tổng Thu</div>
+              <div class="describe-item2" style="background-color: #bbdefb; text-align: end;">{{ formatVND(tong) }}</div>
         </div>
         <!-- sua -->
         <div>
             <div v-show="showsuaGiaoDich" class="modal">
-                <h2>Sửa thu nhập</h2>
+                <div style="font-size: 35px;">Sửa thu nhập</div>
                 <form @submit.prevent="suaGiaoDich" class="item2">
                     <label for="ngay">Ngày:</label>
                     <input type="date" v-model="formsua.ngaysua" required>
@@ -223,7 +250,7 @@ label{
         <!-- them -->
          <div>
             <div v-show="showThemGiaoDich" class="modal">
-                <h2>Thêm thu nhập</h2>
+                <div style="font-size: 35px;">Thêm thu nhập</div>
                 <form @submit.prevent="themGiaoDich" class="item2">
                     <label for="ngay">Ngày:</label>
                     <input type="date" v-model="formThuNhap.ngay" required>
@@ -279,10 +306,12 @@ export default {
         danhmucsua: '',
         tiensua: 0,
         ghichusua: '',
-      }
+      },
+      tong: 0
+
     }
   },
-  created() { 
+   created() { 
     console.log(localStorage.getItem('userId'))
     this.userId = localStorage.getItem('userId')
     this.loadThuNhap();
@@ -290,8 +319,25 @@ export default {
       this.$router.push('/login')
       alert('bạn chưa đăng nhập')
     }
+    
+      
+        
+    console.log(this.dsThuNhap)
   },
   methods: {
+    formatVNDate(value) {
+      return new Intl.DateTimeFormat('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      }).format(new Date(value));
+    },
+    formatVND(value) {
+      return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+    },
+    formatCurrency(value) {
+      return parseFloat(value).toFixed(3); // Chuyển số thành chuỗi với 2 chữ số thập phân
+    },
     async loadThuNhap() {
       console.log(this.userId)
       if (this.userId != 'null') {
@@ -301,6 +347,9 @@ export default {
         if (response.ok) {
           const data = await response.json();
           this.dsThuNhap = data;
+          for (let i = 0; i < this.dsThuNhap.length; i++) {
+          this.tong += parseInt(this.dsThuNhap[i].sotien);
+    }
         }
       } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error);

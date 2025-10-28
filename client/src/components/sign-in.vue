@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <form @submit.prevent="handleLogin">
-      <h2>Đăng nhập</h2>
+      <h2>Đăng ký</h2>
       <div class="form-group">
         <input type="text" v-model="tentaikhoan" placeholder="Tên tài khoản" required>
       </div>

@@ -2,33 +2,40 @@
 body{
     margin: 0px !important;
     padding: 0px !important;
+    background-color:  #f5f7fa;
 }
 .header {
     align-items: center;
-    height: 50px;
-    display: flex;
-    background-color: rgb(106, 117, 234);
+    height: 60px;
+    display: grid;
+    background-color:  #0277bd;
     width: 100% !important;
+    grid-template-columns: 40% 60%;
 }
 
 .title {
-    width: 30%;
+    display: flex;
+    color:black;
+    justify-content: center;
 }
 
 .logo {
-    width: 10%;
+    width: 8%;
     border-radius: 75px;
 }
 
 .menu {
-    width: 60%;
+    
     display: flex;
     justify-content: flex-end;
-    position: absolute;
+    
     right: 0;
+    background-color:  #0277bd;
+    
 }
 
 .item-menu {
+    
     justify-content: end;
     align-items: center;
     height: 50px;
@@ -46,11 +53,65 @@ body{
 }
 
 .active {
-    background-color: rgb(57, 57, 173);
+    background-color: rgb(78, 78, 188);
 }
 #app {
     width: 100%;
     margin: 0px !important;
+}
+button{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    color: black;
+}
+.modal{
+  border-radius: 10px;
+  position: absolute;
+  top: 27%;
+  left: 33.333%;
+  background-color:  #e3f2fd;
+  padding: 40px;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 10px black;
+}
+.them-app {
+    display: flex;
+    justify-content: end;
+    background-color: #2196f3;
+    text-decoration: none;
+
+}
+.them-app:hover {
+    background-color: #1976d2;
+    
+}
+.dong-app{
+  background-color: #ef5350;
+}
+.dong-app:hover{
+  background-color: #e53935;
+}
+.them-app, .dong-app{
+  width: 80px;
+  height: 25px;
+  align-items: center;
+}
+.modal-buttons{
+  display: flex;
+  justify-content: space-around;
+}
+.name{
+    display: inline-block;
+    width: 150px;
+    
+}
+.logo-text{
+    display: grid;
+    align-items: center;
 }
 </style>
 
@@ -58,18 +119,36 @@ body{
   <div class="app">
     <div class="col-12 header">
         <div class="title">
-            <img src="/img/image (1).jpg" class="logo" alt="">
-            <span>Quản Lý Chi Tiêu</span>
+            <img src="./image/logo.jpg" class="logo" alt="">
+                <div class="logo-text">Quản Lý Chi Tiêu</div> 
+            <!-- <div class="name">
+                <img src="./image/logo.jpg" class="logo" alt="">
+                <span>Quản Lý Chi Tiêu</span>   
+            </div> -->
+
+            
         </div>
-        <div class="menu">
-            <router-link :to="`/home/${userId}`"  class="item-menu" exact-active-class="active">home</router-link >
-            <router-link :to="`/chitieu/${userId}`"  class="item-menu" active-class="active">Chi Tiêu</router-link >
-            <router-link :to="`/thunhap/${userId}`"  class="item-menu" active-class="active">thu nhập</router-link >
-            <router-link :to="`/login`"  class="item-menu" v-on:click="" >đăng xuất</router-link>
+<div>
+            <div class="menu">
+            <router-link :to="`/home/${userId}`" class="item-menu" @click="huy" active-class="active">Home</router-link>
+            <router-link :to="`/chitieu/${userId}`"  class="item-menu" @click="huy" active-class="active">Chi Tiêu</router-link >
+            <router-link :to="`/thunhap/${userId}`"  class="item-menu" @click="huy" active-class="active">Thu Nhập</router-link >
+            <button v-on:click="show" class="item-menu">Đăng Xuất</button>
+            </div>
         </div>
     </div>
+    <div v-show="showXacnhanDX" class="modal">
+                <p>Bạn có chắc chắn muốn đăng xuất khỏi tài khoản nầy ?</p>
+                <div class="modal-buttons">
+                    <router-link :to="`/login`"  class="them-app" @click="xacNhanDX" >Đăng Xuất</router-link> 
+                    <button @click="huy" class="dong-app">Hủy</button>
+                </div>
+            </div>
+    
     <router-view></router-view>
 </div>
+
+
 
 </template>
 
@@ -78,7 +157,12 @@ import login from './components/login.vue';
 
 
 export default {
-  name: 'App',
+    name: 'App',
+    data() {
+        return {
+            showXacnhanDX: false,
+        }
+    },
   components: {
     login
     },
@@ -92,6 +176,16 @@ export default {
       
   },
     methods: {
+        huy() {
+            this.showXacnhanDX = false
+        },
+        xacNhanDX() {
+            this.logout();
+            this.showXacnhanDX = false
+        },
+        show() {
+            this.showXacnhanDX = true;
+        },
         setUserId(id) {
             this.userId = id
             localStorage.setItem('userId', id)
